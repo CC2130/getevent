@@ -7,7 +7,9 @@
 #include <sys/ioctl.h>
 #include <sys/inotify.h>
 //#include <sys/limits.h>
-#include <sys/poll.h>
+#include <limits.h>
+//#include <sys/poll.h>
+#include <poll.h>
 #include <linux/input.h>
 #include <errno.h>
 #include <unistd.h>
@@ -668,13 +670,13 @@ int main(int argc, char *argv[])
                         return 1;
                     }
                     if(get_time) {
-                        printf("[%8ld.%06ld] ", event.time.tv_sec, event.time.tv_usec);
+                        printf("[%8ld.%06ld] ", event.input_event_sec, event.input_event_usec);
                     }
                     if(print_device)
                         printf("%s: ", device_names[i]);
                     print_event(event.type, event.code, event.value, print_flags);
                     if(sync_rate && event.type == 0 && event.code == 0) {
-                        int64_t now = event.time.tv_sec * 1000000LL + event.time.tv_usec;
+                        int64_t now = event.input_event_sec * 1000000LL + event.input_event_usec;
                         if(last_sync_time)
                             printf(" rate %lld", 1000000LL / (now - last_sync_time));
                         last_sync_time = now;
